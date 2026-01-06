@@ -14,6 +14,12 @@ import (
 	"gioui.org/widget/material"
 )
 
+var (
+	Version   = "v0.0.0"
+	GitCommit = "unknown"
+	BuildTime = "unknown"
+)
+
 // AboutWindow 关于窗口
 type AboutWindow struct {
 	theme       *material.Theme
@@ -58,7 +64,6 @@ func (a *AboutWindow) Run(w *app.Window) error {
 }
 
 func (a *AboutWindow) Layout(gtx layout.Context) layout.Dimensions {
-
 	// 填充深绿色背景
 	dialogBg := color.NRGBA{R: 45, G: 75, B: 65, A: 255}
 	paint.Fill(gtx.Ops, dialogBg)
@@ -155,28 +160,71 @@ func (a *AboutWindow) layoutContent(gtx layout.Context) layout.Dimensions {
 					)
 				})
 			}),
-			// 许可证标题
+
+			// 目的
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				return layout.Inset{Bottom: unit.Dp(10)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					label := material.Body1(a.theme, "License: ")
-					label.Color = lightGray
-					label.TextSize = unit.Sp(14)
-					return label.Layout(gtx)
+				return layout.Inset{Bottom: unit.Dp(15)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return layout.Flex{
+						Axis: layout.Horizontal,
+					}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							label := material.Body1(a.theme, "Version: ")
+							label.Color = lightGray
+							label.TextSize = unit.Sp(14)
+							return label.Layout(gtx)
+						}),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							label := material.Body1(a.theme, Version)
+							label.Color = white
+							label.TextSize = unit.Sp(14)
+							return label.Layout(gtx)
+						}),
+					)
 				})
 			}),
-			// GPLv3许可证文本
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				licenseText := "GNU GENERAL PUBLIC LICENSE\nVersion 3, 29 June 2007\n\n" +
-					"Copyright (C) 2007 Free Software Foundation, Inc.\n\n" +
-					"This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\n" +
-					"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\n" +
-					"You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>."
 
-				label := material.Body2(a.theme, licenseText)
-				label.Color = white
-				label.Alignment = text.Start
-				label.TextSize = unit.Sp(11)
-				return label.Layout(gtx)
+			// 目的
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return layout.Inset{Bottom: unit.Dp(15)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return layout.Flex{
+						Axis: layout.Horizontal,
+					}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							label := material.Body1(a.theme, "GitCommit: ")
+							label.Color = lightGray
+							label.TextSize = unit.Sp(14)
+							return label.Layout(gtx)
+						}),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							label := material.Body1(a.theme, GitCommit)
+							label.Color = white
+							label.TextSize = unit.Sp(14)
+							return label.Layout(gtx)
+						}),
+					)
+				})
+			}),
+
+			// 目的
+			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+				return layout.Inset{Bottom: unit.Dp(15)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
+					return layout.Flex{
+						Axis: layout.Horizontal,
+					}.Layout(gtx,
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							label := material.Body1(a.theme, "BuildTime: ")
+							label.Color = lightGray
+							label.TextSize = unit.Sp(14)
+							return label.Layout(gtx)
+						}),
+						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+							label := material.Body1(a.theme, BuildTime)
+							label.Color = white
+							label.TextSize = unit.Sp(14)
+							return label.Layout(gtx)
+						}),
+					)
+				})
 			}),
 		)
 	})
