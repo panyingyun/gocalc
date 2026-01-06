@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-	"image"
 	"image/color"
 
 	"gioui.org/app"
-	"gioui.org/io/system"
 	"gioui.org/layout"
 	"gioui.org/op"
-	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/text"
 	"gioui.org/unit"
@@ -45,27 +42,15 @@ func (a *AboutWindow) Run(w *app.Window) error {
 		e := w.Event()
 		switch e := e.(type) {
 		case app.DestroyEvent:
-			fmt.Println("子窗口已关闭")
+			fmt.Println("sub window closed")
 			return e.Err
 
 		case app.FrameEvent:
 			ops.Reset()
 			gtx := app.NewContext(&ops, e)
 
-			// 先布局，让按钮渲染
+			// 布局
 			a.Layout(gtx)
-
-			// fmt.Println("FrameEvent Clicked ...", a.closeBtn.Clicked(gtx), a.closeBtnBot.Clicked(gtx))
-			// fmt.Println("FrameEvent Hovered ...", a.closeBtn.Hovered(), a.closeBtnBot.Hovered())
-			// fmt.Println("FrameEvent Pressed ...", a.closeBtn.Pressed(), a.closeBtnBot.Pressed())
-			// fmt.Println("FrameEvent History ...", a.closeBtn.History(), a.closeBtnBot.History())
-
-			// 然后检查按钮点击事件
-			if a.closeBtn.Pressed() || a.closeBtnBot.Pressed() {
-				w.Perform(system.ActionClose)
-				fmt.Println("close button clicked")
-				return nil // 正常关闭窗口
-			}
 
 			e.Frame(gtx.Ops)
 		}
@@ -97,17 +82,6 @@ func (a *AboutWindow) Layout(gtx layout.Context) layout.Dimensions {
 				return a.layoutContent(gtx)
 			})
 		}),
-		// 底部关闭按钮
-		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Inset{
-				Top:    unit.Dp(10),
-				Bottom: unit.Dp(20),
-				Left:   unit.Dp(20),
-				Right:  unit.Dp(20),
-			}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-				return a.layoutCloseButton(gtx)
-			})
-		}),
 	)
 }
 
@@ -124,74 +98,12 @@ func (a *AboutWindow) layoutTitleBar(gtx layout.Context) layout.Dimensions {
 		}.Layout(gtx,
 			// 标题
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				label := material.H6(a.theme, "关于")
+				label := material.H6(a.theme, "About")
 				label.Color = white
 				label.Alignment = text.Start
 				return label.Layout(gtx)
 			}),
-			// 关闭按钮
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				gtx.Constraints.Min = image.Pt(24, 24)
-				gtx.Constraints.Max = image.Pt(24, 24)
-				return a.closeBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					a.drawCloseIcon(gtx)
-					return layout.Dimensions{Size: gtx.Constraints.Max}
-				})
-			}),
 		)
-	})
-}
-
-func (a *AboutWindow) drawCloseIcon(gtx layout.Context) {
-	center := image.Pt(12, 12)
-	size := 10
-	lineWidth := 2
-
-	// 绘制X图标
-	for i := -size; i <= size; i++ {
-		rect := image.Rectangle{
-			Min: image.Pt(center.X+i-lineWidth/2, center.Y+i-lineWidth/2),
-			Max: image.Pt(center.X+i+lineWidth/2, center.Y+i+lineWidth/2),
-		}
-		rr := clip.UniformRRect(rect, 1)
-		paint.FillShape(gtx.Ops, white, rr.Op(gtx.Ops))
-	}
-
-	for i := -size; i <= size; i++ {
-		rect := image.Rectangle{
-			Min: image.Pt(center.X+i-lineWidth/2, center.Y-i-lineWidth/2),
-			Max: image.Pt(center.X+i+lineWidth/2, center.Y-i+lineWidth/2),
-		}
-		rr := clip.UniformRRect(rect, 1)
-		paint.FillShape(gtx.Ops, white, rr.Op(gtx.Ops))
-	}
-}
-
-func (a *AboutWindow) layoutCloseButton(gtx layout.Context) layout.Dimensions {
-	// 底部关闭按钮
-	return layout.Center.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-		buttonWidth := gtx.Dp(unit.Dp(120))
-		buttonHeight := gtx.Dp(unit.Dp(40))
-		gtx.Constraints.Min = image.Pt(buttonWidth, buttonHeight)
-		gtx.Constraints.Max = image.Pt(buttonWidth, buttonHeight)
-
-		// 先记录背景绘制操作
-		r := op.Record(gtx.Ops)
-		rr := clip.UniformRRect(image.Rectangle{Max: gtx.Constraints.Max}, gtx.Dp(unit.Dp(5)))
-		paint.FillShape(gtx.Ops, buttonGreen, rr.Op(gtx.Ops))
-		call := r.Stop()
-
-		// 使用 closeBtnBot 处理点击，内部绘制背景和文字
-		return a.closeBtnBot.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-			// 绘制按钮背景
-			call.Add(gtx.Ops)
-			// 绘制按钮文字
-			label := material.Body1(a.theme, "关闭")
-			label.Color = white
-			label.Alignment = text.Middle
-			label.TextSize = unit.Sp(16)
-			return layout.Center.Layout(gtx, label.Layout)
-		})
 	})
 }
 
@@ -208,7 +120,7 @@ func (a *AboutWindow) layoutContent(gtx layout.Context) layout.Dimensions {
 						Axis: layout.Horizontal,
 					}.Layout(gtx,
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							label := material.Body1(a.theme, "作者：")
+							label := material.Body1(a.theme, "Author: ")
 							label.Color = lightGray
 							label.TextSize = unit.Sp(14)
 							return label.Layout(gtx)
@@ -229,13 +141,13 @@ func (a *AboutWindow) layoutContent(gtx layout.Context) layout.Dimensions {
 						Axis: layout.Horizontal,
 					}.Layout(gtx,
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							label := material.Body1(a.theme, "目的：")
+							label := material.Body1(a.theme, "Purpose: ")
 							label.Color = lightGray
 							label.TextSize = unit.Sp(14)
 							return label.Layout(gtx)
 						}),
 						layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-							label := material.Body1(a.theme, "学习gioui编写Go GUI应用")
+							label := material.Body1(a.theme, "How to write Go GUI app with gio")
 							label.Color = white
 							label.TextSize = unit.Sp(14)
 							return label.Layout(gtx)
@@ -246,7 +158,7 @@ func (a *AboutWindow) layoutContent(gtx layout.Context) layout.Dimensions {
 			// 许可证标题
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				return layout.Inset{Bottom: unit.Dp(10)}.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					label := material.Body1(a.theme, "许可证：")
+					label := material.Body1(a.theme, "License: ")
 					label.Color = lightGray
 					label.TextSize = unit.Sp(14)
 					return label.Layout(gtx)

@@ -152,7 +152,7 @@ func (c *Calculator) layoutTitleBar(gtx layout.Context) layout.Dimensions {
 			// 关于按钮（左上角）
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 				return c.menuBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					label := material.Body2(c.theme, "关于")
+					label := material.Body2(c.theme, "About")
 					label.Color = white
 					label.Alignment = text.Start
 					label.TextSize = unit.Sp(14)
@@ -166,15 +166,6 @@ func (c *Calculator) layoutTitleBar(gtx layout.Context) layout.Dimensions {
 				label.Alignment = text.Middle
 				label.TextSize = unit.Sp(16)
 				return label.Layout(gtx)
-			}),
-			// 关闭按钮（右上角）
-			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				gtx.Constraints.Min = image.Pt(24, 24)
-				gtx.Constraints.Max = image.Pt(24, 24)
-				return c.historyBtn.Layout(gtx, func(gtx layout.Context) layout.Dimensions {
-					c.drawCloseIcon(gtx)
-					return layout.Dimensions{Size: gtx.Constraints.Max}
-				})
 			}),
 		)
 	})
@@ -193,34 +184,6 @@ func (c *Calculator) drawMenuIcon(gtx layout.Context) {
 		rect := image.Rectangle{
 			Min: image.Pt(int(xOffset), int(y)),
 			Max: image.Pt(int(xOffset+lineWidth), int(y+lineHeight)),
-		}
-		rr := clip.UniformRRect(rect, 1)
-		paint.FillShape(gtx.Ops, white, rr.Op(gtx.Ops))
-	}
-}
-
-func (c *Calculator) drawCloseIcon(gtx layout.Context) {
-	// 绘制关闭图标（X）- 使用小矩形组成两条交叉线
-	center := image.Pt(12, 12)
-	size := 10 // X的边长的一半
-	lineWidth := 2
-
-	// 绘制两条交叉线形成X
-	// 线1: 左上到右下
-	for i := -size; i <= size; i++ {
-		rect := image.Rectangle{
-			Min: image.Pt(center.X+i-lineWidth/2, center.Y+i-lineWidth/2),
-			Max: image.Pt(center.X+i+lineWidth/2, center.Y+i+lineWidth/2),
-		}
-		rr := clip.UniformRRect(rect, 1)
-		paint.FillShape(gtx.Ops, white, rr.Op(gtx.Ops))
-	}
-
-	// 线2: 右上到左下
-	for i := -size; i <= size; i++ {
-		rect := image.Rectangle{
-			Min: image.Pt(center.X+i-lineWidth/2, center.Y-i-lineWidth/2),
-			Max: image.Pt(center.X+i+lineWidth/2, center.Y-i+lineWidth/2),
 		}
 		rr := clip.UniformRRect(rect, 1)
 		paint.FillShape(gtx.Ops, white, rr.Op(gtx.Ops))
@@ -473,13 +436,6 @@ func (c *Calculator) handleEvents(gtx layout.Context) {
 			about := NewAboutWindow()
 			about.Run(aboutWindow)
 		}()
-	}
-	if c.historyBtn.Clicked(gtx) {
-		// 关闭窗口
-		if c.window != nil {
-			fmt.Println("history button clicked")
-			os.Exit(0)
-		}
 	}
 }
 
