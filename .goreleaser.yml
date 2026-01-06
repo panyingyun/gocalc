@@ -43,7 +43,6 @@ builds:
     goos:
       - linux
       - windows
-      - darwin
     
     # 架构
     goarch:
