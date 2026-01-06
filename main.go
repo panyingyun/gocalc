@@ -248,8 +248,8 @@ func (c *Calculator) layoutButtons(gtx layout.Context) layout.Dimensions {
 		{"AC", "±", "%", "⌫"},
 		{"7", "8", "9", "÷"},
 		{"4", "5", "6", "×"},
-		{"1", "2", "3", "+"},
-		{".", "0", "=", ""}, // 最后一行的=会跨两列
+		{"1", "2", "3", "-"},
+		{".", "0", "=", "+"},
 	}
 
 	// 计算按钮大小：4列布局，留出间距
@@ -281,23 +281,13 @@ func (c *Calculator) layoutButtons(gtx layout.Context) layout.Dimensions {
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return c.layoutButtonRow(gtx, buttonLabels[2], 2, buttonSize, buttonGap)
 		}),
-		// 第四行：1 2 3 +
+		// 第四行：1 2 3 -
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
 			return c.layoutButtonRow(gtx, buttonLabels[3], 3, buttonSize, buttonGap)
 		}),
-		// 第五行：. 0 =（=跨两列）
+		// 第五行：. 0 = +
 		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-			return layout.Flex{
-				Axis:    layout.Horizontal,
-				Spacing: layout.SpaceBetween,
-			}.Layout(gtx,
-				// . 按钮
-				c.button(gtx, &c.buttons[4][0], ".", buttonSize),
-				// 0 按钮
-				c.button(gtx, &c.buttons[4][1], "0", buttonSize),
-				// = 按钮（跨两列，占据第3和第4列的位置）
-				c.buttonWide(gtx, &c.buttons[4][2], "=", buttonSize*2+buttonGap, buttonSize),
-			)
+			return c.layoutButtonRow(gtx, buttonLabels[4], 4, buttonSize, buttonGap)
 		}),
 	)
 }
@@ -321,10 +311,10 @@ func (c *Calculator) buttonWide(gtx layout.Context, btn *widget.Clickable, label
 		// 确定按钮样式
 		bgColor, textColor := c.getButtonColors(label)
 
-		// 绘制圆角矩形背景
+		// 绘制方形背景
 		r := op.Record(gtx.Ops)
 		rect := image.Rectangle{Max: gtx.Constraints.Max}
-		radius := gtx.Dp(unit.Dp(40)) // 更圆润的圆角
+		radius := gtx.Dp(unit.Dp(10)) // 方形，无圆角
 		rr := clip.UniformRRect(rect, radius)
 		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 		call := r.Stop()
@@ -357,10 +347,10 @@ func (c *Calculator) button(gtx layout.Context, btn *widget.Clickable, label str
 		// 确定按钮样式
 		bgColor, textColor := c.getButtonColors(label)
 
-		// 绘制圆角矩形背景
+		// 绘制方形背景
 		r := op.Record(gtx.Ops)
 		rect := image.Rectangle{Max: gtx.Constraints.Max}
-		radius := gtx.Dp(unit.Dp(40)) // 更圆润的圆角
+		radius := gtx.Dp(unit.Dp(10)) // 方形，无圆角
 		rr := clip.UniformRRect(rect, radius)
 		paint.FillShape(gtx.Ops, bgColor, rr.Op(gtx.Ops))
 		call := r.Stop()
@@ -408,8 +398,8 @@ func (c *Calculator) handleEvents(gtx layout.Context) {
 		{"AC", "±", "%", "⌫"},
 		{"7", "8", "9", "÷"},
 		{"4", "5", "6", "×"},
-		{"1", "2", "3", "+"},
-		{".", "0", "=", ""},
+		{"1", "2", "3", "-"},
+		{".", "0", "=", "+"},
 	}
 
 	for i := range c.buttons {
