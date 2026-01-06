@@ -33,7 +33,8 @@ var (
 func main() {
 	go func() {
 		defer os.Exit(0)
-		w := app.NewWindow(
+		w := &app.Window{}
+		w.Option(
 			app.Decorated(false),
 			app.Size(unit.Dp(400), unit.Dp(700)),
 		)
@@ -92,7 +93,7 @@ func (c *Calculator) Run(w *app.Window) error {
 	var ops op.Ops
 
 	for {
-		e := w.NextEvent()
+		e := w.Event()
 		switch e := e.(type) {
 		case app.DestroyEvent:
 			return e.Err
@@ -463,7 +464,8 @@ func (c *Calculator) handleEvents(gtx layout.Context) {
 	if c.menuBtn.Clicked(gtx) {
 		// 打开关于窗口
 		go func() {
-			aboutWindow := app.NewWindow(
+			aboutWindow := &app.Window{}
+			aboutWindow.Option(
 				app.Decorated(false),
 				app.Title("关于"),
 				app.Size(unit.Dp(380), unit.Dp(500)),

@@ -42,7 +42,7 @@ func (a *AboutWindow) Run(w *app.Window) error {
 	var ops op.Ops
 
 	for {
-		e := w.NextEvent()
+		e := w.Event()
 		switch e := e.(type) {
 		case app.DestroyEvent:
 			fmt.Println("子窗口已关闭")
