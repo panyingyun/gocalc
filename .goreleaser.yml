@@ -44,20 +44,15 @@ builds:
       - linux
       - windows
       - darwin
-      - freebsd
-      - openbsd
-      - netbsd
     
     # 架构
     goarch:
       - amd64
       - arm64
-      - arm
     
     # ARM架构版本（适用于arm和arm64）
     goarm:
       - "7"
-    
     
     # 构建标志
     flags:
