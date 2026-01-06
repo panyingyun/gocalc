@@ -32,7 +32,8 @@ release:
 
 # 构建配置 - 支持多个平台和架构
 builds:
-  - id: default
+  # Linux 构建配置
+  - id: linux
     # 主程序入口
     main: .
     
@@ -42,7 +43,6 @@ builds:
     # 构建命令
     goos:
       - linux
-      - windows
     
     # 架构
     goarch:
@@ -58,6 +58,34 @@ builds:
       - -X main.Version={{.Version}}
       - -X main.GitCommit={{.Commit}}
       - -X main.BuildTime={{.Date}}
+  
+  # Windows 构建配置（使用 windowsgui 标志隐藏控制台）
+  - id: windows
+    # 主程序入口
+    main: .
+    
+    # 二进制文件名称
+    binary: gocalc
+    
+    # 构建命令
+    goos:
+      - windows
+    
+    # 架构
+    goarch:
+      - amd64
+    
+    # 构建标志
+    flags:
+      - -trimpath
+    
+    # LDFlags - Windows 特殊处理：使用 -H windowsgui 隐藏控制台窗口
+    ldflags:
+      - -s -w
+      - -H windowsgui
+      - -X main.Version={{.Version}}
+      - -X main.GitCommit={{.Commit}}
+      - -X main.BuildTime={{.Date}}
     
     # 忽略错误
     ignore:
@@ -65,12 +93,6 @@ builds:
         goarch: arm
       - goos: windows
         goarch: arm64
-      - goos: freebsd
-        goarch: arm
-      - goos: openbsd
-        goarch: arm
-      - goos: netbsd
-        goarch: arm
 
 # 归档配置
 archives:
