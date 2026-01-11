@@ -35,7 +35,7 @@ func main() {
 		defer os.Exit(0)
 		w := &app.Window{}
 		w.Option(
-			app.Decorated(false),
+			app.Title("Go Calculator based on Gio"),
 			app.Size(unit.Dp(400), unit.Dp(700)),
 		)
 		calc := NewCalculator()
@@ -161,7 +161,7 @@ func (c *Calculator) layoutTitleBar(gtx layout.Context) layout.Dimensions {
 			}),
 			// Standard 文字（中间）
 			layout.Rigid(func(gtx layout.Context) layout.Dimensions {
-				label := material.Body1(c.theme, "Calculator")
+				label := material.Body1(c.theme, "Gocalc by panyingyun")
 				label.Color = white
 				label.Alignment = text.Middle
 				label.TextSize = unit.Sp(16)
@@ -245,7 +245,7 @@ func (c *Calculator) layoutDisplay(gtx layout.Context) layout.Dimensions {
 
 func (c *Calculator) layoutButtons(gtx layout.Context) layout.Dimensions {
 	buttonLabels := [][]string{
-		{"AC", "±", "%", "⌫"},
+		{"AC", "±", "%", "<-"},
 		{"7", "8", "9", "÷"},
 		{"4", "5", "6", "×"},
 		{"1", "2", "3", "-"},
@@ -419,7 +419,6 @@ func (c *Calculator) handleEvents(gtx layout.Context) {
 		go func() {
 			aboutWindow := &app.Window{}
 			aboutWindow.Option(
-				app.Decorated(false),
 				app.Title("关于"),
 				app.Size(unit.Dp(380), unit.Dp(500)),
 			)

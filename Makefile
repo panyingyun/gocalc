@@ -23,7 +23,10 @@ build:
 	go mod tidy
 	gofumpt -l -w .
 	go build  -trimpath -ldflags "-s -w" -ldflags "$(LDFLAGS)" -v .
-	
+
+build-windows:
+	go build  -trimpath -ldflags "-s -w -H windowsgui" -v .
+
 clean:
 	go clean -i .
 
@@ -32,3 +35,4 @@ run:
 	gofumpt -l -w .
 	go build  -trimpath -ldflags "-s -w" -ldflags "$(LDFLAGS)" -v .
 	./gocalc
+
